@@ -28,7 +28,8 @@ public class DNAtree
         while (sc.hasNextLine())
         {
             String line = sc.nextLine();
-            System.out.println(line);
+            Parser parse = new Parser(line);
+            parse.parseString();
         
         }
         sc.close();
