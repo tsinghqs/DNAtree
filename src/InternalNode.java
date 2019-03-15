@@ -7,7 +7,8 @@
 public class InternalNode extends DNANode {
     private static final int NCHILDREN = 5;
     private final DNANode[] children = new DNANode[NCHILDREN];
-    private int nodenum = 0;
+    private int numExac = 0;
+    private int numGen = 0;
     
     // Creates an instance with all Empty child nodes
     public InternalNode() {
@@ -73,7 +74,11 @@ public class InternalNode extends DNANode {
     public void search(int level, char[] chars) {
         char ch = chars[level];
         System.out.println("Level" + level);
-        
+        if ( level > chars.length)
+        {
+            System.out.println("no sequence found");
+            return;
+        }
         int position = 0;
         switch (ch) {
             case 'A': position = 0; break;
@@ -84,26 +89,33 @@ public class InternalNode extends DNANode {
         }
         DNANode child = children[position];
         if (child instanceof EmptyNode) {
-            
+            numExac++;
+            System.out.println("# of nodes visited:" + numExac);
             System.out.println("no sequence found");
             return;
         }
         if (child instanceof LeafNode) {
-            if (position == 4) {
-                System.out.println("Sequence already exists! (in $-bucket)");
-                return;
+            numExac++;
+            String val = child.toString();
+            String check = new String(chars);
+            if (val.equals(check))
+            {
+                System.out.println("# of nodes visited:" + numExac);
+                System.out.println("sequence: " + val);
             }
-            
-            System.out.println("    Replacing LeafNode @ " + position);
-            InternalNode InternaLeafNode = new InternalNode();
-            children[position] = InternaLeafNode;
-            LeafNode LeafNode = (LeafNode) child;
-            InternaLeafNode.insert(level + 1, LeafNode);
+            else
+            {
+                System.out.println("# of nodes visited:" + numExac);
+                System.out.println("no sequence found");
+            }
             return;
         }
-        
-        System.out.println("    Processing InternalNode @ " + position);
-        InternalNode InternaLeafNode = (InternalNode) child;    
+        else {
+            numExac++;
+            search(level + 1, chars);
+        }
+     
+          
     }
     
 }
