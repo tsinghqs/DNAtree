@@ -7,6 +7,7 @@
 public class InternalNode extends DNANode {
     private static final int NCHILDREN = 5;
     private final DNANode[] children = new DNANode[NCHILDREN];
+    private int nodenum = 0;
     
     // Creates an instance with all Empty child nodes
     public InternalNode() {
@@ -64,7 +65,45 @@ public class InternalNode extends DNANode {
         InternaLeafNode.insert(level + 1, newnode);
     }
     
-    public void search() {
+    public void searchPre(int level, char[] chars) {
+            
         
     }
+    
+    public void search(int level, char[] chars) {
+        char ch = chars[level];
+        System.out.println("Level" + level);
+        
+        int position = 0;
+        switch (ch) {
+            case 'A': position = 0; break;
+            case 'C': position = 1; break;
+            case 'G': position = 2; break;
+            case 'T': position = 3; break;
+            case 0: position = 4; break;
+        }
+        DNANode child = children[position];
+        if (child instanceof EmptyNode) {
+            
+            System.out.println("no sequence found");
+            return;
+        }
+        if (child instanceof LeafNode) {
+            if (position == 4) {
+                System.out.println("Sequence already exists! (in $-bucket)");
+                return;
+            }
+            
+            System.out.println("    Replacing LeafNode @ " + position);
+            InternalNode InternaLeafNode = new InternalNode();
+            children[position] = InternaLeafNode;
+            LeafNode LeafNode = (LeafNode) child;
+            InternaLeafNode.insert(level + 1, LeafNode);
+            return;
+        }
+        
+        System.out.println("    Processing InternalNode @ " + position);
+        InternalNode InternaLeafNode = (InternalNode) child;    
+    }
+    
 }
