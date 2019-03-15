@@ -117,4 +117,9 @@ public class DNAtree {
            inode.insert(0, newnode);
        }
    }
+   
+   public void searchSequence() {
+       
+       
+   }
 }
