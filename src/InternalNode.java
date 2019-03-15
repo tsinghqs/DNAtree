@@ -63,4 +63,8 @@ public class InternalNode extends DNANode {
         InternalNode InternaLeafNode = (InternalNode) child;
         InternaLeafNode.insert(level + 1, newnode);
     }
+    
+    public void search() {
+        
+    }
 }

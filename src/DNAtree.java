@@ -118,7 +118,7 @@ public class DNAtree {
        }
    }
    
-   public void searchSequence() {
+   public void searchSequence(String sequence) {    
        
        
    }
