@@ -14,6 +14,11 @@ public class LeafNode extends DNANode {
         this.sequence = sequence;
     }
     
+    public char[] getSequence()
+    {
+        return sequence;
+    }
+    
     public char getCharAt(int level) {
         if (level >= 0 && level < sequence.length) {
             return sequence[level];

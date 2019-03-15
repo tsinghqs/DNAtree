@@ -120,6 +120,56 @@ public class DNAtree {
    
    public void searchSequence(String sequence) {    
        
+       char[] seq = sequence.toCharArray();
+       boolean exactSearch = false;
+       if (seq[seq.length - 1] == '$')
+       {
+           exactSearch = true;
+       }
+       // Sanity check on the given sequence
+       if (! isValidSequence(seq)) {
+           System.out.println("# of nodes visited: 0");
+           System.out.println("no sequence found");
+           return;
+       }
        
+       if (root instanceof EmptyNode)
+       {
+           System.out.println("# of nodes visited: 1");
+           System.out.println("no sequence found");
+           return; 
+       }
+       
+       if (root instanceof LeafNode)
+       {
+           if (exactSearch)
+           {
+               String deformatted = sequence.substring(0, sequence.length() - 1);
+               seq = deformatted.toCharArray();
+           }
+           
+           LeafNode leafRoot = (LeafNode) root;
+           char[] lnodeSeq = leafRoot.getSequence();
+           
+           if (String.valueOf(seq).equals(String.valueOf(lnodeSeq)))
+           {
+               System.out.println("# of nodes visited: 1");
+               System.out.println("sequence: " + leafRoot.toString());
+               return; 
+           }
+           
+           System.out.println("# of nodes visited: 1");
+           System.out.println("no sequence found");
+           return; 
+       }
+       
+       InternalNode internalRoot = (InternalNode) root;
+       if (exactSearch)
+       {
+           internalRoot.search(0, seq);
+           return;
+       }
+       
+       internalRoot.searchPre(0, seq);
    }
 }
