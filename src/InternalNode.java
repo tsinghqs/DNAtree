@@ -7,7 +7,6 @@
 public class InternalNode extends DNANode {
     private static final int NCHILDREN = 5;
     private final DNANode[] children = new DNANode[NCHILDREN];
-    private int numExac = 0;
     private int numGen = 0;
     
     // Creates an instance with all Empty child nodes
@@ -42,7 +41,6 @@ public class InternalNode extends DNANode {
         }
         DNANode child = children[position];
         if (child instanceof EmptyNode) {
-            System.out.println("    Replacing EmptyNode @ " + position);
             children[position] = newnode;
             return;
         }
@@ -52,7 +50,6 @@ public class InternalNode extends DNANode {
                 return;
             }
             
-            System.out.println("    Replacing LeafNode @ " + position);
             InternalNode InternaLeafNode = new InternalNode();
             children[position] = InternaLeafNode;
             LeafNode LeafNode = (LeafNode) child;
@@ -60,8 +57,6 @@ public class InternalNode extends DNANode {
             InternaLeafNode.insert(level + 1, newnode);
             return;
         }
-        
-        System.out.println("    Processing InternalNode @ " + position);
         InternalNode InternaLeafNode = (InternalNode) child;
         InternaLeafNode.insert(level + 1, newnode);
     }
@@ -72,48 +67,46 @@ public class InternalNode extends DNANode {
     }
     
     public void search(int level, char[] chars) {
-        char ch = chars[level];
-        System.out.println("Level" + level);
-        if ( level > chars.length)
+        
+        if ( level >= chars.length)
         {
             System.out.println("no sequence found");
             return;
         }
+        char ch = chars[level];
+        System.out.println(ch);
         int position = 0;
         switch (ch) {
             case 'A': position = 0; break;
             case 'C': position = 1; break;
             case 'G': position = 2; break;
             case 'T': position = 3; break;
-            case 0: position = 4; break;
+            case '$': position = 4; break;
         }
         DNANode child = children[position];
         if (child instanceof EmptyNode) {
-            numExac++;
-            System.out.println("# of nodes visited:" + numExac);
+            System.out.println("# of nodes visited: " + (level + 2));
             System.out.println("no sequence found");
             return;
         }
         if (child instanceof LeafNode) {
-            numExac++;
             String val = child.toString();
             String check = new String(chars);
+            check = check.substring(0, check.length() - 1);
             if (val.equals(check))
             {
-                System.out.println("# of nodes visited:" + numExac);
+                System.out.println("# of nodes visited: " + (level + 2));
                 System.out.println("sequence: " + val);
             }
             else
             {
-                System.out.println("# of nodes visited:" + numExac);
+                System.out.println("# of nodes visited: " + (level + 2));
                 System.out.println("no sequence found");
             }
             return;
         }
-        else {
-            numExac++;
-            search(level + 1, chars);
-        }
+            InternalNode InternaLeafNode = (InternalNode) child;
+            InternaLeafNode.search(level + 1, chars);
      
           
     }

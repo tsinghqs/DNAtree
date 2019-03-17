@@ -23,7 +23,17 @@ public class DNAtree {
    public static void main(String[] args) throws FileNotFoundException {
        // TODO code application logic here
        DNAtree tree = new DNAtree();
-     //read file as an argument
+       tree.print();
+       tree.insert("A");
+       tree.printLengths();
+       tree.printStats();
+       tree.searchSequence("A$");
+       
+       tree.insert("AA");
+       tree.print();
+       tree.searchSequence("A$");
+       tree.searchSequence("AA$");
+       //read file as an argument
        String fileName = args[0];
        File file = new File(fileName);
        Scanner sc = new Scanner(file);
@@ -132,11 +142,11 @@ public class DNAtree {
            exactSearch = true;
        }
        // Sanity check on the given sequence
-       if (! isValidSequence(seq)) {
-           System.out.println("# of nodes visited: 0");
-           System.out.println("no sequence found");
-           return;
-       }
+       //if (! isValidSequence(seq)) {
+         //  System.out.println("# of nodes visited: 0");
+           //System.out.println("no sequence found");
+           //return;
+       //}
        
        if (root instanceof EmptyNode)
        {
