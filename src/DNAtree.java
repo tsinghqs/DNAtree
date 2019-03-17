@@ -23,16 +23,6 @@ public class DNAtree {
    public static void main(String[] args) throws FileNotFoundException {
        // TODO code application logic here
        DNAtree tree = new DNAtree();
-       tree.print();
-       tree.insert("A");
-       tree.printLengths();
-       tree.printStats();
-       tree.searchSequence("A$");
-       
-       tree.insert("AA");
-       tree.print();
-       tree.searchSequence("A$");
-       tree.searchSequence("AA$");
        //read file as an argument
        String fileName = args[0];
        File file = new File(fileName);

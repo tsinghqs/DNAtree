@@ -17,7 +17,24 @@ public class DNAtreetest extends TestCase {
     {
         tester = new DNAtree();
     }
-
+    
+    public void testInsert()
+    {
+        tester.insert("A");
+        tester.insert("AA");
+        tester.insert("F");
+        String test = "ACT";
+        tester.insert(test);
+        tester.insert("AGT");
+        tester.insert("CAG");
+        tester.searchSequence("A");
+        tester.searchSequence("A$");
+        tester.print();
+        tester.printLengths();
+        tester.printStats();
+        assertEquals("ACT", test);
+        
+    }
     
    
 }
