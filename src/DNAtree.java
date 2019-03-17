@@ -24,9 +24,12 @@ public class DNAtree {
        tree.insert("A");
        tree.printLengths();
        tree.printStats();
+       tree.searchSequence("A$");
        
        tree.insert("AA");
        tree.print();
+       tree.searchSequence("A$");
+       tree.searchSequence("AA$");
        
        tree.insert("AA");
        tree.insert("A");
@@ -127,11 +130,11 @@ public class DNAtree {
            exactSearch = true;
        }
        // Sanity check on the given sequence
-       if (! isValidSequence(seq)) {
-           System.out.println("# of nodes visited: 0");
-           System.out.println("no sequence found");
-           return;
-       }
+       //if (! isValidSequence(seq)) {
+         //  System.out.println("# of nodes visited: 0");
+           //System.out.println("no sequence found");
+           //return;
+       //}
        
        if (root instanceof EmptyNode)
        {
