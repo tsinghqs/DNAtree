@@ -3,6 +3,8 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 
+
+
 /*
 - TODO:
 - See if we can do a node.equals() for LeafNode to compare sequence
@@ -16,8 +18,9 @@ public class DNAtree {
 
    /**
     * @param args the command line arguments
+ * @throws FileNotFoundException 
     */
-   public static void main(String[] args) {
+   public static void main(String[] args) throws FileNotFoundException {
        // TODO code application logic here
        DNAtree tree = new DNAtree();
        tree.print();
@@ -30,9 +33,18 @@ public class DNAtree {
        tree.print();
        tree.searchSequence("A$");
        tree.searchSequence("AA$");
+       //read file as an argument
+       String fileName = args[0];
+       File file = new File(fileName);
+       Scanner sc = new Scanner(file);
+       while (sc.hasNextLine())
+       {
+           String line = sc.nextLine();
+           Parser parse = new Parser(tree, line);
+           parse.parseString();
        
-       tree.insert("AA");
-       tree.insert("A");
+       }
+       sc.close();
    }
    
    private DNANode root = EmptyNode.getInst();
