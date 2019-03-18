@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-
 /**
  * DNATree is the driver class that has the flyweight node
  * and all of the methods that the parser file interprets.
