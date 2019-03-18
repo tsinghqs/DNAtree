@@ -1,38 +1,58 @@
-
-/*
- - InternaLeafNode: Models intermediate nodes.
- - Contains exactly 5 children
- - Must contain absolutely NO OTHER data.
-*/
-public class InternalNode extends DNANode {
+/**
+ * InternalNode has five children DNANodes
+ * and has its own methods implemented.
+ * @author vpratha
+ * @version 3.17.2019
+ */
+public class InternalNode extends DNANode 
+{
+    /**
+     * Constant for number of children 
+     * an InternalNode can have.
+     */
     private static final int NCHILDREN = 5;
+    /**
+     * children of this node.
+     */
     private final DNANode[] children = new DNANode[NCHILDREN];
-    private int numGen = 0;
     
-    // Creates an instance with all Empty child nodes
-    public InternalNode() {
-        for (int i = 0; i < children.length; i++) {
+    /**
+     * Initializes children to EmptyNodes.
+     */
+    public InternalNode() 
+    {
+        for (int i = 0; i < children.length; i++) 
+        {
             children[i] = EmptyNode.getInst();
         }
     }
     
-    public void printInfo(int level, int type) {
-        
-        // Print "I"
+    /**
+     * Prints itself along with all of its children.
+     */
+    public void printInfo(int level, int type) 
+    {
         System.out.println("I");
-        
-        // And, print all children at level+1 indent
-        for (DNANode child : children) {
+        for (DNANode child : children) 
+        {
             child.print(level + 1, type);
         }
     }
     
-    public void insert(int level, LeafNode newnode) {
-        
-        System.out.println("InternaNodeInsert: " + level + " " + newnode);
+    /**
+     * Handles insertion of a LeafNode.
+     * @param level the level in the tree currently
+     * @param newnode the LeafNode to be inserted
+     * @flag true if new node is being inserted
+     *       false when already existing node is 
+     *       reorganized in tree
+     */
+    public void insert(int level, LeafNode newnode, boolean flag) 
+    {  
         char ch = newnode.getCharAt(level);
         int position = 0;
-        switch (ch) {
+        switch (ch) 
+        {
             case 'A': position = 0; break;
             case 'C': position = 1; break;
             case 'G': position = 2; break;
@@ -40,75 +60,204 @@ public class InternalNode extends DNANode {
             case 0: position = 4; break;
         }
         DNANode child = children[position];
-        if (child instanceof EmptyNode) {
+        if (child instanceof EmptyNode) 
+        {
             children[position] = newnode;
+            if (flag)
+            {
+                System.out.println("sequence " + newnode + 
+                    " inserted at level " + (level + 1));
+            }
             return;
         }
-        if (child instanceof LeafNode) {
-            if (position == 4) {
-                System.out.println("Sequence already exists! (in $-bucket)");
+        if (child instanceof LeafNode) 
+        {
+            if (position == 4) 
+            {
+                System.out.println("sequence " + newnode + " already exists");
                 return;
             }
             
-            InternalNode InternaLeafNode = new InternalNode();
-            children[position] = InternaLeafNode;
-            LeafNode LeafNode = (LeafNode) child;
-            InternaLeafNode.insert(level + 1, LeafNode);
-            InternaLeafNode.insert(level + 1, newnode);
-            return;
-        }
-        InternalNode InternaLeafNode = (InternalNode) child;
-        InternaLeafNode.insert(level + 1, newnode);
-    }
-    
-    public void searchPre(int level, char[] chars) {
+            LeafNode lnode = (LeafNode) child;
+            if (lnode.containsSequenceOf(newnode)) 
+            {
+                System.out.println("sequence " + newnode + " already exists");
+                return;
+            }
             
-        
-    }
-    
-    public void search(int level, char[] chars) {
-        
-        if ( level >= chars.length)
-        {
-            System.out.println("no sequence found");
+            InternalNode inode = new InternalNode();
+            children[position] = inode;
+            inode.insert(level + 1, lnode, false);
+            inode.insert(level + 1, newnode, true);
             return;
         }
-        char ch = chars[level];
-        System.out.println(ch);
+        InternalNode inode = (InternalNode) child;
+        inode.insert(level + 1, newnode, true);
+    }
+    
+    /**
+     * Removes given LeafNode starting at given level.
+     * @param level the level in the tree currently
+     * @param node_to_remove node to be removed
+     * @return a child node if it is the only child after removal
+     *         or null if there are more children remaining
+     */
+    public DNANode remove(int level, LeafNode node_to_remove) 
+    {
+        char ch = node_to_remove.getCharAt(level);
         int position = 0;
-        switch (ch) {
+        switch (ch) 
+        {
             case 'A': position = 0; break;
             case 'C': position = 1; break;
             case 'G': position = 2; break;
             case 'T': position = 3; break;
-            case '$': position = 4; break;
+            case 0: position = 4; break; 
         }
         DNANode child = children[position];
-        if (child instanceof EmptyNode) {
-            System.out.println("# of nodes visited: " + (level + 2));
-            System.out.println("no sequence found");
+        if (child instanceof EmptyNode) 
+        {
+            System.out.println("sequence " + node_to_remove + " does not exist");
+            return null;
+        }
+       
+        // Case: The child is a leaf; replace with empty, and check for merge
+        if (child instanceof LeafNode) 
+        {
+            children[position] = EmptyNode.getInst();
+            System.out.println("sequence " + node_to_remove + " removed");
+            return getLoneNode();
+        }
+       
+        // Case: The child is an InternalNode
+        InternalNode inode = (InternalNode) child;
+        DNANode lone_node = inode.remove(level + 1, node_to_remove);
+       
+        // Perform merge
+        if (lone_node != null) 
+        {
+            // If we are at level 0, let the tree change the root
+            if (level == 0) 
+            {
+                return lone_node;
+            } 
+            else 
+            {
+                // replace internal with leaf since this internal has just one leaf
+                children[position] = lone_node;
+                // Further merges are not allowed (or possible)
+                lone_node = null;
+            }
+        }
+        return lone_node;
+    }
+   
+    /**
+     * Helper method for remove().
+     * @return the lone node
+     */
+    public DNANode getLoneNode() 
+    {
+        int count = 0;
+        DNANode ret = null;
+        for (DNANode node : children) 
+        {
+            if (! (node instanceof EmptyNode)) 
+            {
+                if (++count > 1) 
+                {
+                    return null;
+                }
+                ret = node;
+            }
+        }
+        return ret;
+    }
+   
+    /**
+     * Searches for all sequences under this node
+     * and updates results.
+     * @param results the SearchResults object to be updated.
+     */
+    public void searchAll(SearchResults results)
+    {
+        results.incrementNodesVisited();
+        for (DNANode child : children)
+        {
+            child.searchAll(results);
+        }
+    }
+   
+    /**
+     * Searches for all sequences matching given 
+     * sequence/prefix and updates results recursively
+     * using level.
+     * @param level the level of the tree currently
+     * @param sequence the search term
+     * @param results the SearchResults object being updated
+     */
+    public void search(int level, char[] sequence, SearchResults results) 
+    {  
+        char ch = 0;
+        if (level >= 0 && level < sequence.length) 
+        {
+            ch = sequence[level];
+        }
+       
+        if (ch == 0) 
+        {
+            searchAll(results);
             return;
         }
-        if (child instanceof LeafNode) {
-            String val = child.toString();
-            String check = new String(chars);
-            check = check.substring(0, check.length() - 1);
-            if (val.equals(check))
+       
+        results.incrementNodesVisited();
+        DNANode child = null;
+        switch (ch) 
+        {
+            case 'A': child = children[0]; break;
+            case 'C': child = children[1]; break;
+            case 'G': child = children[2]; break;
+            case 'T': child = children[3]; break;
+            case '$': child = children[4]; break;
+        }
+       
+        // Perform an exact-search match
+        if (ch == '$') 
+        {
+            if (child instanceof LeafNode) 
             {
-                System.out.println("# of nodes visited: " + (level + 2));
-                System.out.println("sequence: " + val);
-            }
-            else
-            {
-                System.out.println("# of nodes visited: " + (level + 2));
-                System.out.println("no sequence found");
+                results.incrementNodesVisited();
+                results.addMatch(sequence);
             }
             return;
         }
-            InternalNode InternaLeafNode = (InternalNode) child;
-            InternaLeafNode.search(level + 1, chars);
-     
-          
+       
+        // EmptyNode: do nothing
+        if (child instanceof EmptyNode) 
+        {
+            results.incrementNodesVisited();
+            return;
+        }
+       
+        // LeafNode: verify a starts-with match (auto-includes exact match)
+        if (child instanceof LeafNode) 
+        {
+            results.incrementNodesVisited();
+            LeafNode lnode = (LeafNode) child;
+            String prefix = String.valueOf(sequence);
+            if (prefix.endsWith("$")) 
+            {
+                prefix = prefix.substring(0, prefix.length() - 1);
+            }
+            if (String.valueOf(lnode).startsWith(prefix)) 
+            {
+                results.addMatch(lnode.toString().toCharArray());
+            }
+            return;
+        }
+       
+        // InternalNode: progress to next level 
+        child.search(level + 1, sequence, results);
     }
     
 }

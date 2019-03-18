@@ -1,12 +1,14 @@
 import student.TestCase;
 /**
- * Class to test BSTNode
+ * Class to test Parser.
  * @author tsingh
- *@version 2019
- * @param <T>
+ * @version 2019
  */
 public class ParserTest extends TestCase {
     
+    /**
+     * Fields for testing.
+     */
     private Parser tester;
     private String check;
     private DNAtree right;

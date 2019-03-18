@@ -3,188 +3,221 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 
-
-
-/*
-- TODO:
-- See if we can do a node.equals() for LeafNode to compare sequence
-- remove()
-- search()
-- main() to read from arg[0] file, and call tree functions
-*/
-
-
-public class DNAtree {
-
-   /**
-    * @param args the command line arguments
- * @throws FileNotFoundException 
-    */
-   public static void main(String[] args) throws FileNotFoundException {
-       // TODO code application logic here
-       DNAtree tree = new DNAtree();
-       tree.print();
-       tree.insert("A");
-       tree.printLengths();
-       tree.printStats();
-       tree.searchSequence("A$");
-       
-       tree.insert("AA");
-       tree.print();
-       tree.searchSequence("A$");
-       tree.searchSequence("AA$");
-       //read file as an argument
-       String fileName = args[0];
-       File file = new File(fileName);
-       Scanner sc = new Scanner(file);
-       while (sc.hasNextLine())
-       {
-           String line = sc.nextLine();
-           Parser parse = new Parser(tree, line);
-           parse.parseString();
-       
-       }
-       sc.close();
-   }
+/**
+ * DNATree is the driver class that has the flyweight node
+ * and all of the methods that the parser file interprets.
+ * @author vpratha
+ * @version 3.17.2019
+ *
+ */
+public class DNAtree 
+{
+    /**
+     * DNA_CHARSET is used to determine if sequences are valid.
+     */
+    private static final String DNA_CHARSET = "ACGT";
+    private DNANode root;
+    
+    /**
+     * DNAtree's constructor; 
+     * initializes root to flyweight node
+     */
+    public DNAtree()
+    {
+        root = EmptyNode.getInst();
+    }
+    
+    /**
+     * Processes input file and sends each command to the Parser.
+     * @param args the input file of commands
+     * @throws FileNotFoundException 
+     */
+    public static void main(String[] args) throws FileNotFoundException 
+    {
+        // creates DNAtree used by Parser
+        DNAtree tree = new DNAtree();
+        
+        // reads command line arg as input file
+        String fileName = args[0];
+        File input = new File(fileName);
+        
+        // parses each command in input file
+        Scanner sc = new Scanner(input);
+        while (sc.hasNextLine())
+        {
+            String line = sc.nextLine();
+            Parser parse = new Parser(tree, line);
+            parse.parseString();
+        }
+        sc.close();
+    }
    
-   private DNANode root = EmptyNode.getInst();
-   
-   /*
-    - isValidSequence(sequence): private/static method validates the sequence
-    - cannot be empty
-    - must conform to {A, C, G, T} charset.
-   */
-   private static final String DNA_CHARSET = "ACGT";
-   private boolean isValidSequence(char[] sequence) {
+    /**
+     * Determines if sequence is valid based on DNA_CHARSET.
+     * @param sequence the sequence in question
+     * @return true if the sequence is valid
+     */
+    private boolean isValidSequence(char[] sequence) 
+    {
        // Must be non-empty
-       if (sequence.length == 0) {
+       if (sequence.length == 0) 
+       {
            return false;
        }
-       // Must conform to 
-       for (char c : sequence) {
-           if (DNA_CHARSET.indexOf(c) < 0) {
+       // Must conform to DNA_CHARSET 
+       for (char c : sequence) 
+       {
+           if (DNA_CHARSET.indexOf(c) < 0) 
+           {
                return false;
            }
        }
        return true;
-   }
+    }
    
-   /*
-    - print(): Public method to dump the tree
-    - prints each node on a separate line in pre-order traversal
-   */
-   public void print() {
+    /**
+     * Prints dump of tree in preorder traversal
+     */
+    public void print() 
+    {
        root.print(0, DNANode.PRINT_SIMPLE);
-   }
-   /*
-    - printLengths(): Public method to dump the tree
-    - prints each node on a separate line in pre-order traversal
-    - prints sequences and lengths
-   */
-   public void printLengths() {
+    }
+    
+    /**
+     * Prints dump of tree with lengths of sequences
+     */
+    public void printLengths() 
+    {
        root.print(0, DNANode.PRINT_LENGTHS);
-   }
-   /*
-    - printStats(): Public method to dump the tree
-    - prints each node on a separate line in pre-order traversal
-    - prints sequences and stats
-   */
-   public void printStats() {
+    }
+
+    /**
+     * Prints dump of tree with stats of sequences
+     */
+    public void printStats() 
+    {
        root.print(0, DNANode.PRINT_STATS);
-   }
+    }
    
-   /*
-    insert(): Public method which inserts a given sequence
-    - sequence must contain one or mode characters from {A, C, G, T}
-    - sequence cannot already exist in the tree
-    - returns the new ROOT node, if the insert changes the root
-    - returns null if the insert does not change the root
-    - always prints an appropriate message
-   */
-   public void insert(String sequence_str) {
+    /**
+     * Inserts sequence in tree.
+     * @param sequence the sequence to be inserted
+     */
+    public void insert(String sequence) 
+    {
+       char[] seq = sequence.toCharArray();
        
-       char[] sequence = sequence_str.toCharArray();
-       
-       // Sanity check on the given sequence
-       if (! isValidSequence(sequence)) {
-           System.out.println("Error: Invalid sequence!");
+       if (! isValidSequence(seq)) 
+       {
+           System.out.println("sequence is invalid");
            return;
        }
        
        // Create a new leaf node
-       LeafNode newnode = new LeafNode(sequence);
+       LeafNode newnode = new LeafNode(seq);
        
-       // Insert the newnode starting at root
-       if (root instanceof EmptyNode) {
+       // Insert newnode starting at root
+       if (root instanceof EmptyNode) 
+       {
            root = newnode;
-       } else if (root instanceof LeafNode) {
-           LeafNode LeafNode = (LeafNode) root;
-           if (LeafNode.containsSequenceOf(newnode)) {
-               System.out.println("Error: The sequence already exists!");
+           System.out.println("sequence " + sequence + 
+               " inserted at level " + 0);
+       } 
+       
+       else if (root instanceof LeafNode) 
+       {
+           LeafNode leafRoot = (LeafNode) root;
+           if (leafRoot.containsSequenceOf(newnode)) 
+           {
+               System.out.println("sequence " + sequence + " already exists");
                return;
            }
            root = new InternalNode();
-           InternalNode inode = (InternalNode) root;
-           inode.insert(0, LeafNode);
-           inode.insert(0, newnode);
-       } else {
-           InternalNode inode = (InternalNode) root;
-           inode.insert(0, newnode);
+           InternalNode internalRoot = (InternalNode) root;
+           internalRoot.insert(0, leafRoot, false);
+           internalRoot.insert(0, newnode, true);
+       } 
+       
+       else 
+       {
+           InternalNode internalRoot = (InternalNode) root;
+           internalRoot.insert(0, newnode, true);
        }
-   }
+    }
    
-   public void searchSequence(String sequence) {    
-       
+   /*
+   remove(sequence_str): Public method which removes a sequence from the tree
+   - sequence must contain one or more characters from {A, C, G, T}
+   - always (success or failure) prints an appropriate message
+   */
+    /**
+     * Removes sequence in tree.
+     * @param sequence
+     */
+    public void remove(String sequence) 
+    {
        char[] seq = sequence.toCharArray();
-       boolean exactSearch = false;
-       if (seq[seq.length - 1] == '$')
+      
+       if (! isValidSequence(seq)) 
        {
-           exactSearch = true;
-       }
-       // Sanity check on the given sequence
-       //if (! isValidSequence(seq)) {
-         //  System.out.println("# of nodes visited: 0");
-           //System.out.println("no sequence found");
-           //return;
-       //}
-       
-       if (root instanceof EmptyNode)
-       {
-           System.out.println("# of nodes visited: 1");
-           System.out.println("no sequence found");
-           return; 
-       }
-       
-       if (root instanceof LeafNode)
-       {
-           if (exactSearch)
-           {
-               String deformatted = sequence.substring(0, sequence.length() - 1);
-               seq = deformatted.toCharArray();
-           }
-           
-           LeafNode leafRoot = (LeafNode) root;
-           char[] lnodeSeq = leafRoot.getSequence();
-           
-           if (String.valueOf(seq).equals(String.valueOf(lnodeSeq)))
-           {
-               System.out.println("# of nodes visited: 1");
-               System.out.println("sequence: " + leafRoot.toString());
-               return; 
-           }
-           
-           System.out.println("# of nodes visited: 1");
-           System.out.println("no sequence found");
-           return; 
-       }
-       
-       InternalNode internalRoot = (InternalNode) root;
-       if (exactSearch)
-       {
-           internalRoot.search(0, seq);
+           System.out.println("sequence is invalid");
            return;
        }
+      
+       // Create a leaf node, to package the sequence to be deleted
+       LeafNode node_to_remove = new LeafNode(seq);
+      
+       // Delete the sequence, starting at root
+       if (root instanceof EmptyNode) 
+       {
+           System.out.println("sequence " + sequence + " does not exist");
+       } 
        
-       internalRoot.searchPre(0, seq);
-   }
+       else if (root instanceof LeafNode) 
+       {
+           LeafNode lnode = (LeafNode) root;
+           if (! lnode.toString().equals(String.valueOf(seq))) 
+           {
+               System.out.println("sequence " + sequence + " does not exist");
+           } 
+           
+           else 
+           {
+               root = EmptyNode.getInst();
+               System.out.println("sequence " + sequence + " removed");
+           }
+       }
+       
+       else 
+       {
+           InternalNode inode = (InternalNode) root;
+           DNANode lone_node = inode.remove(0, node_to_remove);
+           if (lone_node != null) 
+           {
+               root = lone_node;
+           }
+       }
+    }
+   
+    /**
+     * Searches tree for given sequence.
+     * @param sequence given sequence
+     */
+    public void search(String sequence) 
+    {
+        SearchResults results = new SearchResults();
+        root.search(0, sequence.toCharArray(), results);
+        System.out.println("# of nodes visited: " + results.getNodesVisited());
+        if (results.getMatches().size() == 0) 
+        {
+            System.out.println("no sequence found");
+        } 
+        else 
+        {
+            for (char[] seq : results.getMatches()) 
+            {
+                System.out.println("sequence: " + String.valueOf(seq));
+            }
+        }
+    }
 }

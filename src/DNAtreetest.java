@@ -1,13 +1,14 @@
 import student.TestCase;
 /**
- * Class to test BSTNode
+ * Class to test DNAtree
  * @author tsingh
- *@version 2019
- * @param <T>
+ * @version 2019
  */
 public class DNAtreetest extends TestCase {
     
-
+    /**
+     * Field for testing.
+     */
     private DNAtree tester;
     
     /**

@@ -1,12 +1,14 @@
 import student.TestCase;
 /**
- * Class to test BSTNode
+ * Class to test InternalNode
  * @author tsingh
- *@version 2019
- * @param <T>
+ * @version 2019
  */
 public class InternalNodeTest extends TestCase {
     
+    /**
+     * Field for testing.
+     */
     private InternalNode tester;
     
     /**

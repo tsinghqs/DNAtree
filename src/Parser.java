@@ -1,8 +1,20 @@
-
-public class Parser {
-
+/**
+ * Parser executes each command input.
+ * @author tsingh
+ * @version 3.17.2019
+ *
+ */
+public class Parser 
+{
+    /**
+     * command read from input file.
+     */
     private String input;
+    /**
+     * parseBoy executes each command.
+     */
     private DNAtree parseBoy;
+    
     /**
     * Constructor for parser
     * @param name name of BST
@@ -15,11 +27,8 @@ public class Parser {
    }
    
    /**
-    * fields for parser
+    * Parses input for commands.
     */
-   
-   
-   
    public void parseString()
    {
        String[] commands = input.trim().split("\\s+");
@@ -27,19 +36,17 @@ public class Parser {
        {
            if (commands[0].equals("insert"))
            {
-               
                parseBoy.insert(commands[1]);
            }
            else if (commands[0].equals("remove"))
            {
-               //parseBoy.remove(commands[1]);
-               return;
+               parseBoy.remove(commands[1]);
            }
            else if (commands[0].equals("search"))
            {
-               parseBoy.searchSequence(commands[1]);
+               parseBoy.search(commands[1]);
            }
-           else if (commands.length >= 2 && commands[1].equals("length"))
+           else if (commands.length >= 2 && commands[1].equals("lengths"))
            {
                parseBoy.printLengths();
            }

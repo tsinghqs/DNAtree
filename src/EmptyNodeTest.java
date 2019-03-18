@@ -1,12 +1,14 @@
 import student.TestCase;
 /**
- * Class to test BSTNode
+ * Class to test EmptyNode
  * @author tsingh
- *@version 2019
- * @param <T>
+ * @version 2019
  */
 public class EmptyNodeTest<T> extends TestCase {
     
+    /**
+     * Field for testing.
+     */
     private EmptyNode tester;
     
     /**

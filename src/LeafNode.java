@@ -1,51 +1,112 @@
-/*
- - LeafNode: Non-Empty Leaf DNANode
- - Contains exactly one sequence
-*/
-public class LeafNode extends DNANode {
-    
+/**
+ * LeafNode contains exactly one sequence.
+ * @author vpratha
+ * @version 3.17.2019
+ */
+public class LeafNode extends DNANode 
+{
+    /**
+     * Sequence of the node.
+     */
     private final char[] sequence;
     
-    // For debugging; get rid of it later
-    public String toString() {return String.valueOf(sequence);}
-    
-    // Creates a Leaf DNANode with the given sequence
-    public LeafNode(char[] sequence) {
-        this.sequence = sequence;
+    /**
+     * LeafNode's constructor;
+     * updates sequence field.
+     * @param sequence
+     */
+    public LeafNode(char[] seq) 
+    {
+        sequence = seq;
     }
     
+    /**
+     * Returns String version of sequence.
+     */
+    public String toString() 
+    {
+        return String.valueOf(sequence);    
+    }
+    
+    /**
+     * Returns the sequence.
+     * @return sequence
+     */
     public char[] getSequence()
     {
         return sequence;
     }
     
-    public char getCharAt(int level) {
-        if (level >= 0 && level < sequence.length) {
+    /**
+     * Gets a certain character from the 
+     * sequence based on level.
+     * @param level position of the character in sequence
+     * @return the character in sequence
+     */
+    public char getCharAt(int level) 
+    {
+        if (level >= 0 && level < sequence.length) 
+        {
             return sequence[level];
         }
         return 0;
     }
     
-    public boolean containsSequenceOf(LeafNode DNANode) {
-        return String.valueOf(this.sequence).equals(String.valueOf(DNANode.sequence));
+    /**
+     * Determines if sequence is the same as
+     * lNode's sequence.
+     * @param lNode
+     * @return true if sequences match
+     */
+    public boolean containsSequenceOf(LeafNode lNode) 
+    {
+        return String.valueOf(this.sequence).equals(
+            String.valueOf(lNode.sequence));
     }
     
-    public void printInfo(int level, int type) {
-        switch (type) {
+    /**
+     * Prints the sequence and other information
+     * based on type.
+     * @param level (unused)
+     * @param type the type of print
+     */
+    public void printInfo(int level, int type) 
+    {
+        switch (type) 
+        {
             case DNANode.PRINT_SIMPLE:
                 System.out.println(String.valueOf(sequence));
                 break;
             case DNANode.PRINT_LENGTHS:
-                System.out.println(String.valueOf(sequence) + " " + sequence.length);
+                System.out.println(
+                    String.valueOf(sequence) + " " + sequence.length);
                 break;
             case DNANode.PRINT_STATS:
             default:
-                int total = sequence.length;
-                double a = 0, c = 0, t = 0, g = 0;
-                String stats = "A:25.00 C:25.00 G:25.00 T:25.00";
-                // TODO: count A, C, T and G percentages, and create stats string
+                double n = sequence.length / 100.;
+                double a = 0, c = 0, g = 0, t = 0;
+                for (char ch : sequence) {
+                    switch (ch) {
+                        case 'A': a++; break;
+                        case 'C': c++; break;
+                        case 'G': g++; break;
+                        case 'T': t++; break;
+                    }
+                }
+                String stats = String.format("A:%.2f C:%.2f G:%.2f T:%.2f", a/n, c/n, g/n, t/n);
                 System.out.println(String.valueOf(sequence) + " " + stats);
                 break;
         }
+    }
+    
+    /**
+     * Implementation of searchAll;
+     * updates results accordingly.
+     * @param results the SearchResults object to be updated
+     */
+    public void searchAll(SearchResults results)
+    {
+        results.incrementNodesVisited();
+        results.addMatch(sequence);
     }
 }
