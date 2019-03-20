@@ -2,9 +2,9 @@ import student.TestCase;
 /**
  * Class to test EmptyNode
  * @author tsingh
- * @version 2019
+ * @version 3.17.2019
  */
-public class EmptyNodeTest<T> extends TestCase {
+public class EmptyNodeTest extends TestCase {
     
     /**
      * Field for testing.
@@ -16,16 +16,15 @@ public class EmptyNodeTest<T> extends TestCase {
      */
     public void setUp() 
     {
-        
-    }
-
-    /**
-     *  Tests insert()
-     */
-    public void testGetElement() 
-    {
-        
+        tester = EmptyNode.getInst();
     }
     
+    /**
+     * Tests getInst().
+     */
+    public void testGetInst()
+    {
+        assertTrue(tester instanceof EmptyNode);
+    }
    
 }

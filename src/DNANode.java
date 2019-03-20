@@ -7,10 +7,16 @@
 public abstract class DNANode 
 {
     /**
-     * Constants for different types of prints.
+     * Constant for regular print.
      */
     public static final int PRINT_SIMPLE = 0;
+    /**
+     * Constant for printing sequence lengths.
+     */
     public static final int PRINT_LENGTHS = 1;
+    /**
+     * Constant for printing sequence stats.
+     */
     public static final int PRINT_STATS = 2;
     
     /**
@@ -51,7 +57,8 @@ public abstract class DNANode
      * @param exact true if search term is exact
      * @param results the SearchResults object being updated
      */
-    public void search(int level, char[] sequence, boolean exact, SearchResults results) 
+    public void search(int level, char[] sequence, 
+        boolean exact, SearchResults results) 
     {
         results.incrementNodesVisited();
     }

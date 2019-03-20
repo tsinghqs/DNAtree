@@ -19,6 +19,9 @@ public class DNAtreetest extends TestCase {
         tester = new DNAtree();
     }
     
+    /**
+     * Testing the insert method.
+     */
     public void testInsert()
     {
         tester.insert("A");
