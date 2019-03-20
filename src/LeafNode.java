@@ -126,4 +126,33 @@ public class LeafNode extends DNANode {
         results.incrementNodesVisited();
         results.addMatch(sequence);
     }
+    
+    /**
+     * Method implemented by LeafNode and EmptyNode and
+     * overridden by InternalNode for recursively
+     * finding a given sequence(s) and storing it in
+     * results, based on the current level of the tree.
+     * @param level the current level in the tree
+     * @param sequence the search term
+     * @param exact true if search term is exact
+     * @param results the SearchResults object being updated
+     */
+    public void search(int level, char[] sequence, boolean exact, SearchResults results) 
+    {
+        results.incrementNodesVisited();
+        if (exact)
+        {
+            if (toString().equals(String.valueOf(sequence)))
+            {
+                results.addMatch(sequence);
+            }
+        }
+        else
+        {
+            if (toString().startsWith(String.valueOf(sequence)))
+            {
+                results.addMatch(this.sequence);
+            } 
+        }
+    }
 }

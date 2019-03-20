@@ -140,9 +140,19 @@ public class InternalNode extends DNANode {
 
         // Case: The child is a leaf; replace with empty, and check for merge
         if (child instanceof LeafNode) {
-            children[position] = EmptyNode.getInst();
-            System.out.println("sequence " + node_to_remove + " removed");
-            return getLoneNode();
+            LeafNode lNode = (LeafNode) child;
+            if (lNode.toString().equals(node_to_remove.toString()))
+            {
+                children[position] = EmptyNode.getInst();
+                System.out.println("sequence " + node_to_remove + " removed");
+                return getLoneNode();
+            }
+            else
+            {
+                System.out.println("sequence " + node_to_remove
+                    + " does not exist");
+                return null; 
+            }
         }
 
         // Case: The child is an InternalNode
@@ -151,17 +161,10 @@ public class InternalNode extends DNANode {
 
         // Perform merge
         if (lone_node != null) {
-            // If we are at level 0, let the tree change the root
-            if (level == 0) {
-                return lone_node;
-            }
-            else {
-                // replace internal with leaf since this internal has just one
-                // leaf
-                children[position] = lone_node;
-                // Further merges are not allowed (or possible)
-                lone_node = null;
-            }
+            // replace internal with leaf since this internal has just one
+            // leaf
+            children[position] = lone_node;
+            lone_node = getLoneNode();
         }
         return lone_node;
     }
@@ -182,6 +185,10 @@ public class InternalNode extends DNANode {
                 }
                 ret = node;
             }
+        }
+        if (ret instanceof InternalNode)
+        {
+            return null;
         }
         return ret;
     }
@@ -211,16 +218,18 @@ public class InternalNode extends DNANode {
      *            the level of the tree currently
      * @param sequence
      *            the search term
+     * @param exact
+     *            if the search term is exact               
      * @param results
      *            the SearchResults object being updated
      */
-    public void search(int level, char[] sequence, SearchResults results) {
+    public void search(int level, char[] sequence, boolean exact, SearchResults results) {
         char ch = 0;
         if (level >= 0 && level < sequence.length) {
             ch = sequence[level];
         }
 
-        if (ch == 0) {
+        if (ch == 0 && !exact) {
             searchAll(results);
             return;
         }
@@ -240,16 +249,17 @@ public class InternalNode extends DNANode {
             case 'T':
                 child = children[3];
                 break;
-            case '$':
+            case 0:
                 child = children[4];
                 break;
         }
 
         // Perform an exact-search match
-        if (ch == '$') {
+        if (ch == 0 && exact) {
+            results.incrementNodesVisited();
             if (child instanceof LeafNode) {
-                results.incrementNodesVisited();
-                results.addMatch(sequence);
+                LeafNode lNode = (LeafNode) child;
+                results.addMatch(lNode.toString().toCharArray());
             }
             return;
         }
@@ -264,18 +274,25 @@ public class InternalNode extends DNANode {
         if (child instanceof LeafNode) {
             results.incrementNodesVisited();
             LeafNode lnode = (LeafNode)child;
-            String prefix = String.valueOf(sequence);
-            if (prefix.endsWith("$")) {
-                prefix = prefix.substring(0, prefix.length() - 1);
+            if (exact)
+            {
+                if (lnode.toString().equals(String.valueOf(sequence)))
+                {
+                    results.addMatch(sequence);
+                }
             }
-            if (String.valueOf(lnode).startsWith(prefix)) {
-                results.addMatch(lnode.toString().toCharArray());
+            else
+            {
+                if (lnode.toString().startsWith(String.valueOf(sequence)))
+                {
+                    results.addMatch(lnode.toString().toCharArray());
+                } 
             }
             return;
         }
 
         // InternalNode: progress to next level
-        child.search(level + 1, sequence, results);
+        child.search(level + 1, sequence, exact, results);
     }
 
 }

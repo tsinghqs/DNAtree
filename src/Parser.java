@@ -35,7 +35,7 @@ public class Parser {
      */
     public void parseString() {
         String[] commands = input.trim().split("\\s+");
-        if (commands.length > 0) {
+        if (commands.length == 2) {
             if (commands[0].equals("insert")) {
                 parseBoy.insert(commands[1]);
             }
@@ -45,15 +45,19 @@ public class Parser {
             else if (commands[0].equals("search")) {
                 parseBoy.search(commands[1]);
             }
-            else if (commands.length >= 2 && commands[1].equals("lengths")) {
+            else if (commands[0].equals("print") && 
+                commands[1].equals("lengths")) {
                 parseBoy.printLengths();
             }
-            else if (commands.length >= 2 && commands[1].equals("stats")) {
+            else if (commands[0].equals("print") && 
+                commands[1].equals("stats")) {
                 parseBoy.printStats();
             }
-            else if (commands[0].equals("print")) {
-                parseBoy.print();
-            }
         }
+        else if (commands.length == 1 
+            && commands[0].equals("print")) {
+            parseBoy.print();
+        }
+
     }
 }

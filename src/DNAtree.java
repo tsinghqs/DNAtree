@@ -37,7 +37,8 @@ public class DNAtree {
     public static void main(String[] args) throws FileNotFoundException {
         // creates DNAtree used by Parser
         DNAtree tree = new DNAtree();
-
+        
+        
         // reads command line arg as input file
         String fileName = args[0];
         File input = new File(fileName);
@@ -79,6 +80,7 @@ public class DNAtree {
      * Prints dump of tree in preorder traversal
      */
     public void print() {
+        System.out.println("tree dump:");
         root.print(0, DNANode.PRINT_SIMPLE);
     }
 
@@ -87,6 +89,7 @@ public class DNAtree {
      * Prints dump of tree with lengths of sequences
      */
     public void printLengths() {
+        System.out.println("tree dump:");
         root.print(0, DNANode.PRINT_LENGTHS);
     }
 
@@ -95,6 +98,7 @@ public class DNAtree {
      * Prints dump of tree with stats of sequences
      */
     public void printStats() {
+        System.out.println("tree dump:");
         root.print(0, DNANode.PRINT_STATS);
     }
 
@@ -109,7 +113,7 @@ public class DNAtree {
         char[] seq = sequence.toCharArray();
 
         if (!isValidSequence(seq)) {
-            System.out.println("sequence is invalid");
+            //System.out.println("sequence is invalid");
             return;
         }
 
@@ -157,7 +161,7 @@ public class DNAtree {
         char[] seq = sequence.toCharArray();
 
         if (!isValidSequence(seq)) {
-            System.out.println("sequence is invalid");
+            System.out.println("sequence " + sequence + " does not exist");
             return;
         }
 
@@ -171,7 +175,7 @@ public class DNAtree {
 
         else if (root instanceof LeafNode) {
             LeafNode lnode = (LeafNode)root;
-            if (!lnode.toString().equals(String.valueOf(seq))) {
+            if (!lnode.toString().equals(sequence)) {
                 System.out.println("sequence " + sequence + " does not exist");
             }
 
@@ -194,12 +198,21 @@ public class DNAtree {
     /**
      * Searches tree for given sequence.
      * 
-     * @param sequence
+     * @param sequence_str
      *            given sequence
      */
-    public void search(String sequence) {
+    public void search(String sequence_str) {
+        boolean exact = sequence_str.endsWith("$");
+        if (exact)
+        {
+            sequence_str = sequence_str.substring(0, sequence_str.length() - 1);
+        }
         SearchResults results = new SearchResults();
-        root.search(0, sequence.toCharArray(), results);
+        char[] sequence = sequence_str.toCharArray();
+        if (isValidSequence(sequence))
+        {
+            root.search(0, sequence, exact, results);
+        }
         System.out.println("# of nodes visited: " + results.getNodesVisited());
         if (results.getMatches().size() == 0) {
             System.out.println("no sequence found");

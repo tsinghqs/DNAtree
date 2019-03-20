@@ -48,9 +48,10 @@ public abstract class DNANode
      * results, based on the current level of the tree.
      * @param level the current level in the tree
      * @param sequence the search term
+     * @param exact true if search term is exact
      * @param results the SearchResults object being updated
      */
-    public void search(int level, char[] sequence, SearchResults results) 
+    public void search(int level, char[] sequence, boolean exact, SearchResults results) 
     {
         results.incrementNodesVisited();
     }

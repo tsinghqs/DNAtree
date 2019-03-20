@@ -23,6 +23,7 @@ insert ACTTA
  search         AAAA$
                          search     AA
  search      ACGT$
+ search AAACCCCGGTGAAAACGTA
   
   
            

@@ -28,8 +28,8 @@ public class DNAtreetest extends TestCase {
         tester.insert(test);
         tester.insert("AGT");
         tester.insert("CAG");
-        tester.searchSequence("A");
-        tester.searchSequence("A$");
+        tester.search("A");
+        tester.search("A$");
         tester.print();
         tester.printLengths();
         tester.printStats();
