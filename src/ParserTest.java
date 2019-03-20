@@ -24,6 +24,9 @@ public class ParserTest extends TestCase {
         tester = new Parser(right, check);
     }
     
+    /**
+     * Test methods for parse string and DNAtree
+     */
     public void testParseString()
     {
         tester.parseString();
