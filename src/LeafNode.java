@@ -15,7 +15,7 @@ public class LeafNode extends DNANode {
      * LeafNode's constructor;
      * updates sequence field.
      * 
-     * @param sequence
+     * @param seq the sequence initiated
      */
     public LeafNode(char[] seq) {
         sequence = seq;
@@ -24,6 +24,7 @@ public class LeafNode extends DNANode {
 
     /**
      * Returns String version of sequence.
+     * @return String the version of sequence
      */
     public String toString() {
         return String.valueOf(sequence);
@@ -60,7 +61,7 @@ public class LeafNode extends DNANode {
      * Determines if sequence is the same as
      * lNode's sequence.
      * 
-     * @param lNode
+     * @param lNode node containing sequence
      * @return true if sequences match
      */
     public boolean containsSequenceOf(LeafNode lNode) {
@@ -90,7 +91,10 @@ public class LeafNode extends DNANode {
             case DNANode.PRINT_STATS:
             default:
                 double n = sequence.length / 100.;
-                double a = 0, c = 0, g = 0, t = 0;
+                double a = 0;
+                double c = 0;
+                double g = 0;
+                double t = 0;
                 for (char ch : sequence) {
                     switch (ch) {
                         case 'A':
@@ -137,19 +141,20 @@ public class LeafNode extends DNANode {
      * @param exact true if search term is exact
      * @param results the SearchResults object being updated
      */
-    public void search(int level, char[] sequence, boolean exact, SearchResults results) 
+    public void search(int level, char[] searchSequence, 
+        boolean exact, SearchResults results) 
     {
         results.incrementNodesVisited();
         if (exact)
         {
-            if (toString().equals(String.valueOf(sequence)))
+            if (toString().equals(String.valueOf(searchSequence)))
             {
-                results.addMatch(sequence);
+                results.addMatch(searchSequence);
             }
         }
         else
         {
-            if (toString().startsWith(String.valueOf(sequence)))
+            if (toString().startsWith(String.valueOf(searchSequence)))
             {
                 results.addMatch(this.sequence);
             } 

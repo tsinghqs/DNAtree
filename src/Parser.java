@@ -19,7 +19,7 @@ public class Parser {
     /**
      * Constructor for parser
      * 
-     * @param name
+     * @param tree
      *            name of BST
      * @param terms
      *            string commands
