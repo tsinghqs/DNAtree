@@ -70,6 +70,8 @@ public class InternalNode extends DNANode {
             case 0:
                 position = 4;
                 break;
+            default:
+                //do nothing
         }
         DNANode child = children[position];
         if (child instanceof EmptyNode) {
@@ -132,6 +134,8 @@ public class InternalNode extends DNANode {
             case 0:
                 position = 4;
                 break;
+            default:
+                // do nothing
         }
         DNANode child = children[position];
         if (child instanceof EmptyNode) {
@@ -255,6 +259,8 @@ public class InternalNode extends DNANode {
             case 0:
                 child = children[4];
                 break;
+            default:
+                // do nothing
         }
 
         // Perform an exact-search match
