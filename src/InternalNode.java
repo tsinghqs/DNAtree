@@ -28,7 +28,9 @@ public class InternalNode extends DNANode {
 
 
     /**
-     * Prints itself along with all of its children.
+     * Method to print nodes
+     * @param level the level we are printing on
+     * @param type the type of node
      */
     public void printInfo(int level, int type) {
         System.out.println("I");
@@ -45,7 +47,7 @@ public class InternalNode extends DNANode {
      *            the level in the tree currently
      * @param newnode
      *            the LeafNode to be inserted
-     * @flag true if new node is being inserted
+     * @param flag true if new node is being inserted
      *       false when already existing node is
      *       reorganized in tree
      */
@@ -106,13 +108,13 @@ public class InternalNode extends DNANode {
      * 
      * @param level
      *            the level in the tree currently
-     * @param node_to_remove
+     * @param nodeRemove
      *            node to be removed
      * @return a child node if it is the only child after removal
      *         or null if there are more children remaining
      */
-    public DNANode remove(int level, LeafNode node_to_remove) {
-        char ch = node_to_remove.getCharAt(level);
+    public DNANode remove(int level, LeafNode nodeRemove) {
+        char ch = nodeRemove.getCharAt(level);
         int position = 0;
         switch (ch) {
             case 'A':
@@ -133,7 +135,7 @@ public class InternalNode extends DNANode {
         }
         DNANode child = children[position];
         if (child instanceof EmptyNode) {
-            System.out.println("sequence " + node_to_remove
+            System.out.println("sequence " + nodeRemove
                 + " does not exist");
             return null;
         }
@@ -141,15 +143,15 @@ public class InternalNode extends DNANode {
         // Case: The child is a leaf; replace with empty, and check for merge
         if (child instanceof LeafNode) {
             LeafNode lNode = (LeafNode) child;
-            if (lNode.toString().equals(node_to_remove.toString()))
+            if (lNode.toString().equals(nodeRemove.toString()))
             {
                 children[position] = EmptyNode.getInst();
-                System.out.println("sequence " + node_to_remove + " removed");
+                System.out.println("sequence " + nodeRemove + " removed");
                 return getLoneNode();
             }
             else
             {
-                System.out.println("sequence " + node_to_remove
+                System.out.println("sequence " + nodeRemove
                     + " does not exist");
                 return null; 
             }
@@ -157,16 +159,16 @@ public class InternalNode extends DNANode {
 
         // Case: The child is an InternalNode
         InternalNode inode = (InternalNode)child;
-        DNANode lone_node = inode.remove(level + 1, node_to_remove);
+        DNANode loneNode = inode.remove(level + 1, nodeRemove);
 
         // Perform merge
-        if (lone_node != null) {
+        if (loneNode != null) {
             // replace internal with leaf since this internal has just one
             // leaf
-            children[position] = lone_node;
-            lone_node = getLoneNode();
+            children[position] = loneNode;
+            loneNode = getLoneNode();
         }
-        return lone_node;
+        return loneNode;
     }
 
 
@@ -223,7 +225,8 @@ public class InternalNode extends DNANode {
      * @param results
      *            the SearchResults object being updated
      */
-    public void search(int level, char[] sequence, boolean exact, SearchResults results) {
+    public void search(int level, char[] sequence,
+        boolean exact, SearchResults results) {
         char ch = 0;
         if (level >= 0 && level < sequence.length) {
             ch = sequence[level];
