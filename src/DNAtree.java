@@ -147,7 +147,7 @@ public class DNAtree {
 
 
     /*
-     * remove(sequence_str): Public method which removes a sequence from the
+     * remove(sequenceStr): Public method which removes a sequence from the
      * tree
      * - sequence must contain one or more characters from {A, C, G, T}
      * - always (success or failure) prints an appropriate message
@@ -155,7 +155,7 @@ public class DNAtree {
     /**
      * Removes sequence in tree.
      * 
-     * @param sequence
+     * @param sequence the sequence in the tree
      */
     public void remove(String sequence) {
         char[] seq = sequence.toCharArray();
@@ -166,7 +166,7 @@ public class DNAtree {
         }
 
         // Create a leaf node, to package the sequence to be deleted
-        LeafNode node_to_remove = new LeafNode(seq);
+        LeafNode nodeRemove = new LeafNode(seq);
 
         // Delete the sequence, starting at root
         if (root instanceof EmptyNode) {
@@ -187,9 +187,9 @@ public class DNAtree {
 
         else {
             InternalNode inode = (InternalNode)root;
-            DNANode lone_node = inode.remove(0, node_to_remove);
-            if (lone_node != null) {
-                root = lone_node;
+            DNANode loneNode = inode.remove(0, nodeRemove);
+            if (loneNode != null) {
+                root = loneNode;
             }
         }
     }
@@ -198,17 +198,16 @@ public class DNAtree {
     /**
      * Searches tree for given sequence.
      * 
-     * @param sequence_str
-     *            given sequence
+     * @param sequenceStr given sequence
      */
-    public void search(String sequence_str) {
-        boolean exact = sequence_str.endsWith("$");
+    public void search(String sequenceStr) {
+        boolean exact = sequenceStr.endsWith("$");
         if (exact)
         {
-            sequence_str = sequence_str.substring(0, sequence_str.length() - 1);
+            sequenceStr = sequenceStr.substring(0, sequenceStr.length() - 1);
         }
         SearchResults results = new SearchResults();
-        char[] sequence = sequence_str.toCharArray();
+        char[] sequence = sequenceStr.toCharArray();
         if (isValidSequence(sequence))
         {
             root.search(0, sequence, exact, results);
